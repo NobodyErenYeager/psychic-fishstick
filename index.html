@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Podcast Links</title>
+</head>
+<body>
+  <h2>Podcast Links</h2>
+  <input type="text" id="podcastInput" placeholder="Enter RSS link" />
+  <button onclick="addPodcast()">Add Podcast</button>
+  
+  <ul id="podcastList"></ul>
+
+  <script>
+    // Load podcasts from localStorage
+    function loadPodcasts() {
+      return JSON.parse(localStorage.getItem("podcasts")) || [];
+    }
+
+    // Save podcasts to localStorage
+    function savePodcasts(podcasts) {
+      localStorage.setItem("podcasts", JSON.stringify(podcasts));
+    }
+
+    // Add a new podcast
+    function addPodcast() {
+      const input = document.getElementById("podcastInput");
+      const link = input.value.trim();
+      if (link) {
+        const podcasts = loadPodcasts();
+        podcasts.push(link);
+        savePodcasts(podcasts);
+        input.value = "";
+        displayPodcasts();
+      }
+    }
+
+    // Display podcasts
+    function displayPodcasts() {
+      const podcasts = loadPodcasts();
+      const list = document.getElementById("podcastList");
+      list.innerHTML = "";
+      podcasts.forEach((link, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${link}" target="_blank">${link}</a>
+                        <button onclick="removePodcast(${index})">Remove</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    // Remove a podcast
+    function removePodcast(index) {
+      const podcasts = loadPodcasts();
+      podcasts.splice(index, 1);
+      savePodcasts(podcasts);
+      displayPodcasts();
+    }
+
+    // Initial display
+    displayPodcasts();
+  </script>
+</body>
+</html>
